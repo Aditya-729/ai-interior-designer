@@ -1,0 +1,16 @@
+﻿# Your Project IDs - Keep for Reference
+
+## Supabase
+Organization: vqdppqslarmzzgmyixsw
+Dashboard: https://supabase.com/dashboard/org/vqdppqslarmzzgmyixsw
+Projects: https://supabase.com/dashboard/org/vqdppqslarmzzgmyixsw/projects
+
+## Vercel
+Project ID: k6KjI0PFMQvhpMDtmzlZK9ca
+Dashboard: https://vercel.com/dashboard
+
+## Next Steps
+1. Get Supabase database credentials (see scripts/get-supabase-credentials.md)
+2. Get Vercel project URL (see scripts/get-vercel-credentials.md)
+3. Update .env file
+4. Run: ./scripts/verify-setup.sh

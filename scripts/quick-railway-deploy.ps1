@@ -80,8 +80,9 @@ Write-Host "This will take 2-5 minutes..." -ForegroundColor Gray
 Write-Host ""
 
 railway up
+$deployExitCode = $LASTEXITCODE
 
-if ($LASTEXITCODE -eq 0) {
+if ($deployExitCode -eq 0) {
     Write-Host ""
     Write-Host "✅ Deployment successful!" -ForegroundColor Green
     Write-Host ""
@@ -90,21 +91,32 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "Getting your backend URL..." -ForegroundColor Yellow
     Start-Sleep -Seconds 3
     
-    $url = railway domain 2>&1
-    if ($url -and $url -notlike "*error*" -and $url -notlike "*not found*") {
-        Write-Host ""
-        Write-Host "🎉 Your backend is live!" -ForegroundColor Green
-        Write-Host ""
-        Write-Host "Backend URL: $url" -ForegroundColor Cyan
-        Write-Host ""
-        Write-Host "📋 Next Steps:" -ForegroundColor Yellow
-        Write-Host "1. Test: $url/api/v1/system/health" -ForegroundColor White
-        Write-Host "2. Update Vercel environment variables:" -ForegroundColor White
-        Write-Host "   NEXT_PUBLIC_API_BASE = $url" -ForegroundColor Gray
-        Write-Host "   NEXT_PUBLIC_WS_URL = $($url -replace 'https://', 'wss://')" -ForegroundColor Gray
-        Write-Host "3. Redeploy Vercel" -ForegroundColor White
-        Write-Host ""
-    } else {
+    try {
+        $urlOutput = railway domain 2>&1
+        $url = $urlOutput | Where-Object { $_ -notlike "*error*" -and $_ -notlike "*not found*" -and $_ -match "https?://" }
+        
+        if ($url) {
+            Write-Host ""
+            Write-Host "🎉 Your backend is live!" -ForegroundColor Green
+            Write-Host ""
+            Write-Host "Backend URL: $url" -ForegroundColor Cyan
+            Write-Host ""
+            Write-Host "📋 Next Steps:" -ForegroundColor Yellow
+            Write-Host "1. Test: $url/api/v1/system/health" -ForegroundColor White
+            Write-Host "2. Update Vercel environment variables:" -ForegroundColor White
+            $wsUrl = $url -replace 'https://', 'wss://' -replace 'http://', 'ws://'
+            Write-Host "   NEXT_PUBLIC_API_BASE = $url" -ForegroundColor Gray
+            Write-Host "   NEXT_PUBLIC_WS_URL = $wsUrl" -ForegroundColor Gray
+            Write-Host "3. Redeploy Vercel" -ForegroundColor White
+            Write-Host ""
+        } else {
+            Write-Host ""
+            Write-Host "⚠️  Get your URL from Railway dashboard:" -ForegroundColor Yellow
+            Write-Host "   https://railway.app/dashboard" -ForegroundColor Cyan
+            Write-Host "   → Your Project → Settings → Domains" -ForegroundColor Gray
+            Write-Host ""
+        }
+    } catch {
         Write-Host ""
         Write-Host "⚠️  Get your URL from Railway dashboard:" -ForegroundColor Yellow
         Write-Host "   https://railway.app/dashboard" -ForegroundColor Cyan

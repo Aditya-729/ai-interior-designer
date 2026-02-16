@@ -14,11 +14,44 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
+# Upgrade pip first
+RUN pip install --upgrade pip setuptools wheel
+
 # Copy requirements
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies in stages for better error messages
+# First, install core dependencies
+RUN pip install --no-cache-dir \
+    fastapi==0.104.1 \
+    uvicorn[standard]==0.24.0 \
+    python-multipart==0.0.6 \
+    python-dotenv==1.0.0 \
+    pydantic==2.5.0 \
+    pydantic-settings==2.1.0 \
+    sqlalchemy==2.0.23 \
+    alembic==1.12.1 \
+    psycopg2-binary==2.9.9 \
+    httpx==0.25.2 \
+    aiofiles==23.2.1
+
+# Then install packages with C extensions
+RUN pip install --no-cache-dir \
+    python-jose[cryptography]==3.3.0 \
+    passlib[bcrypt]==1.7.4
+
+# Then install remaining packages
+RUN pip install --no-cache-dir \
+    supabase==2.0.0 \
+    boto3==1.29.7 \
+    qdrant-client==1.7.0 \
+    numpy==1.24.3 \
+    Pillow==10.1.0
+
+# Finally install heavy ML packages (these may take longer)
+RUN pip install --no-cache-dir \
+    openai-whisper==20231117 \
+    sentence-transformers==2.2.2
 
 # Copy application code
 COPY . .

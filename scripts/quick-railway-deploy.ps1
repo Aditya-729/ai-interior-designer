@@ -1,5 +1,5 @@
 # Quick Railway Deployment - Interactive Script
-Write-Host "🚂 Railway Quick Deploy" -ForegroundColor Cyan
+Write-Host " Railway Quick Deploy" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "Step 1: Login to Railway" -ForegroundColor Yellow
@@ -7,15 +7,15 @@ Write-Host "This will show you a URL to visit in your browser..." -ForegroundCol
 railway login --browserless
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ Login failed. Please try again." -ForegroundColor Red
+    Write-Host " Login failed. Please try again." -ForegroundColor Red
     exit 1
 }
 
-Write-Host "✅ Logged in!" -ForegroundColor Green
+Write-Host " Logged in!" -ForegroundColor Green
 Write-Host ""
 
 Set-Location "$PSScriptRoot\..\backend"
-Write-Host "📁 Changed to backend directory" -ForegroundColor Gray
+Write-Host " Changed to backend directory" -ForegroundColor Gray
 Write-Host ""
 
 Write-Host "Step 2: Linking Railway project" -ForegroundColor Yellow
@@ -25,7 +25,7 @@ Write-Host ""
 railway link
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "⚠️  Project linking had issues. Continuing anyway..." -ForegroundColor Yellow
+    Write-Host "  Project linking had issues. Continuing anyway..." -ForegroundColor Yellow
 }
 
 Write-Host ""
@@ -33,7 +33,7 @@ Write-Host "Step 3: Configuring service..." -ForegroundColor Yellow
 railway service --help 2>&1 | Out-Null
 
 Write-Host ""
-Write-Host "⚠️  IMPORTANT: Set Environment Variables" -ForegroundColor Yellow
+Write-Host "  IMPORTANT: Set Environment Variables" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "Before deploying, you need to set environment variables:" -ForegroundColor White
 Write-Host ""
@@ -73,7 +73,7 @@ $deployExitCode = $LASTEXITCODE
 
 if ($deployExitCode -ne 0) {
     Write-Host ""
-    Write-Host "❌ Deployment failed. Check Railway dashboard for logs." -ForegroundColor Red
+    Write-Host " Deployment failed. Check Railway dashboard for logs." -ForegroundColor Red
     Write-Host "   https://railway.app/dashboard" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "Script completed!" -ForegroundColor Green
@@ -81,7 +81,7 @@ if ($deployExitCode -ne 0) {
 }
 
 Write-Host ""
-Write-Host "✅ Deployment successful!" -ForegroundColor Green
+Write-Host " Deployment successful!" -ForegroundColor Green
 Write-Host ""
 
 Write-Host "Getting your backend URL..." -ForegroundColor Yellow
@@ -95,7 +95,7 @@ if ($railwayUrl -and $railwayUrl -notlike "*error*" -and $railwayUrl -notlike "*
 }
 
 Write-Host ""
-Write-Host "✅ Deployment complete!" -ForegroundColor Green
+Write-Host " Deployment complete!" -ForegroundColor Green
 Write-Host ""
 
 if ($null -ne $actualUrl) {

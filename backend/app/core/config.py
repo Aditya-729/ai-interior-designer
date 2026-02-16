@@ -13,17 +13,17 @@ class Settings(BaseSettings):
     MINO_AI_API_KEY: str
     PERPLEXITY_API_KEY: str
     
-    # Supabase (optional for now)
-    SUPABASE_URL: Optional[str] = None
+    # Supabase (required for storage)
+    SUPABASE_URL: str
     SUPABASE_ANON_KEY: Optional[str] = None
-    SUPABASE_SERVICE_KEY: Optional[str] = None
+    SUPABASE_SERVICE_KEY: str  # Required for storage operations
     
-    # Cloudflare R2 (S3-compatible)
-    R2_ACCOUNT_ID: str
-    R2_ACCESS_KEY_ID: str
-    R2_SECRET_ACCESS_KEY: str
+    # Cloudflare R2 (S3-compatible) - Optional, Supabase Storage is used instead
+    R2_ACCOUNT_ID: Optional[str] = None
+    R2_ACCESS_KEY_ID: Optional[str] = None
+    R2_SECRET_ACCESS_KEY: Optional[str] = None
     R2_BUCKET_NAME: str = "ai-interior-designer"
-    R2_ENDPOINT: str
+    R2_ENDPOINT: Optional[str] = None
     R2_PUBLIC_URL: Optional[str] = None  # Public URL prefix if using custom domain
     
     # Database (Supabase Postgres)

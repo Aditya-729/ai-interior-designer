@@ -8,7 +8,7 @@ sqlalchemy==2.0.23
 alembic==1.12.1
 psycopg2-binary==2.9.9
 supabase==2.0.0
-boto3==1.29.7
+# boto3==1.29.7  # Not needed - using Supabase Storage instead of R2
 httpx==0.25.2
 aiofiles==23.2.1
 python-jose[cryptography]==3.3.0

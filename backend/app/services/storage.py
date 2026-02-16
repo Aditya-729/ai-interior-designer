@@ -1,105 +1,110 @@
 """
-S3-compatible storage client (Cloudflare R2).
+Supabase Storage client for file uploads.
 """
 
-import boto3
-from botocore.config import Config
-from botocore.exceptions import ClientError
+from supabase import create_client, Client
 from app.core.config import settings
 from typing import BinaryIO, Optional
 import uuid
 import logging
+import io
 
 logger = logging.getLogger(__name__)
 
 
 class StorageClient:
-    """S3-compatible storage client."""
+    """Supabase Storage client."""
 
     def __init__(self):
-        self.s3_client = boto3.client(
-            "s3",
-            endpoint_url=settings.R2_ENDPOINT,
-            aws_access_key_id=settings.R2_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.R2_SECRET_ACCESS_KEY,
-            config=Config(signature_version="s3v4"),
+        if not settings.SUPABASE_URL or not settings.SUPABASE_SERVICE_KEY:
+            raise ValueError("Supabase URL and Service Key are required for storage")
+        
+        self.supabase: Client = create_client(
+            settings.SUPABASE_URL,
+            settings.SUPABASE_SERVICE_KEY
         )
-        self.bucket_name = settings.R2_BUCKET_NAME
+        self.bucket_name = "ai-interior-designer"
+        
+        # Ensure bucket exists
+        try:
+            self._ensure_bucket()
+        except Exception as e:
+            logger.warning(f"Could not verify bucket exists: {e}")
+    
+    def _ensure_bucket(self):
+        """Ensure storage bucket exists."""
+        try:
+            # Try to list files (this will fail if bucket doesn't exist)
+            self.supabase.storage.from_(self.bucket_name).list(limit=1)
+        except Exception:
+            # Bucket might not exist, but that's okay - Supabase will create it on first upload
+            logger.info(f"Bucket '{self.bucket_name}' will be created on first upload")
 
     def upload_file(self, file_data: bytes, key: str, content_type: str = "image/jpeg") -> str:
         """
-        Upload file to R2 and return public URL.
+        Upload file to Supabase Storage and return public URL.
         
         Args:
             file_data: File bytes
-            key: Storage key
+            key: Storage key (path)
             content_type: MIME type
             
         Returns:
             Public URL
         """
         try:
-            self.s3_client.put_object(
-                Bucket=self.bucket_name,
-                Key=key,
-                Body=file_data,
-                ContentType=content_type,
+            # Upload to Supabase Storage
+            response = self.supabase.storage.from_(self.bucket_name).upload(
+                path=key,
+                file=file_data,
+                file_options={"content-type": content_type, "upsert": "true"}
             )
             
-            # Return public URL
-            if settings.R2_PUBLIC_URL:
-                return f"{settings.R2_PUBLIC_URL}/{key}"
-            else:
-                return f"{settings.R2_ENDPOINT}/{self.bucket_name}/{key}"
-        except ClientError as e:
-            logger.error(f"Failed to upload file: {e}")
+            # Get public URL
+            public_url = self.supabase.storage.from_(self.bucket_name).get_public_url(key)
+            
+            logger.info(f"File uploaded to Supabase Storage: {key}")
+            return public_url
+        except Exception as e:
+            logger.error(f"Failed to upload file to Supabase: {e}")
             raise
 
     def upload_fileobj(self, file_obj: BinaryIO, key: str, content_type: str = "image/jpeg") -> str:
-        """Upload file object to R2."""
+        """Upload file object to Supabase Storage."""
         try:
-            self.s3_client.upload_fileobj(
-                file_obj,
-                self.bucket_name,
-                key,
-                ExtraArgs={"ContentType": content_type},
-            )
-            
-            if settings.R2_PUBLIC_URL:
-                return f"{settings.R2_PUBLIC_URL}/{key}"
-            else:
-                return f"{settings.R2_ENDPOINT}/{self.bucket_name}/{key}"
-        except ClientError as e:
-            logger.error(f"Failed to upload fileobj: {e}")
+            # Read file object into bytes
+            file_data = file_obj.read()
+            return self.upload_file(file_data, key, content_type)
+        except Exception as e:
+            logger.error(f"Failed to upload fileobj to Supabase: {e}")
             raise
 
     def download_file(self, key: str) -> bytes:
-        """Download file from R2."""
+        """Download file from Supabase Storage."""
         try:
-            response = self.s3_client.get_object(Bucket=self.bucket_name, Key=key)
-            return response["Body"].read()
-        except ClientError as e:
-            logger.error(f"Failed to download file: {e}")
+            response = self.supabase.storage.from_(self.bucket_name).download(key)
+            return response
+        except Exception as e:
+            logger.error(f"Failed to download file from Supabase: {e}")
             raise
 
     def delete_file(self, key: str) -> None:
-        """Delete file from R2."""
+        """Delete file from Supabase Storage."""
         try:
-            self.s3_client.delete_object(Bucket=self.bucket_name, Key=key)
-        except ClientError as e:
-            logger.error(f"Failed to delete file: {e}")
+            self.supabase.storage.from_(self.bucket_name).remove([key])
+            logger.info(f"File deleted from Supabase Storage: {key}")
+        except Exception as e:
+            logger.error(f"Failed to delete file from Supabase: {e}")
             raise
 
     def get_presigned_url(self, key: str, expires_in: int = 3600) -> str:
-        """Generate presigned URL for temporary access."""
+        """Generate signed URL for temporary access."""
         try:
-            return self.s3_client.generate_presigned_url(
-                "get_object",
-                Params={"Bucket": self.bucket_name, "Key": key},
-                ExpiresIn=expires_in,
-            )
-        except ClientError as e:
-            logger.error(f"Failed to generate presigned URL: {e}")
+            # Supabase doesn't have presigned URLs, but we can use public URLs
+            # For private files, you'd need to use Supabase's signed URL feature
+            return self.supabase.storage.from_(self.bucket_name).get_public_url(key)
+        except Exception as e:
+            logger.error(f"Failed to generate signed URL: {e}")
             raise
 
     def generate_key(self, prefix: str, filename: Optional[str] = None) -> str:

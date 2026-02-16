@@ -4,7 +4,7 @@ Write-Host ""
 
 Write-Host "Step 1: Login to Railway" -ForegroundColor Yellow
 Write-Host "This will open your browser..." -ForegroundColor Gray
-railway login
+railway login --browserless
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "❌ Login failed. Please try again." -ForegroundColor Red

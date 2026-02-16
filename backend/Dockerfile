@@ -5,6 +5,12 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
+    g++ \
+    build-essential \
+    python3-dev \
+    libffi-dev \
+    libssl-dev \
+    ffmpeg \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 

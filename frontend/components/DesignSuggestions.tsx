@@ -40,7 +40,7 @@ export default function DesignSuggestions({
       setSuggestions(response.data.recommendations || response.data.raw_response)
       
       // Parse into cards (simple implementation)
-      const lines = (response.data.recommendations || '').split('\n').filter(l => l.trim())
+      const lines = (response.data.recommendations || '').split('\n').filter((l: string) => l.trim())
       setCards(lines.slice(0, 5).map((line, i) => ({ id: i, text: line })))
     } catch (error) {
       console.error('Failed to load suggestions:', error)

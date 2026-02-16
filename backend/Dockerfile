@@ -65,8 +65,8 @@ RUN pip install --no-cache-dir --verbose sentence-transformers==2.2.2
 # Copy application code
 COPY . .
 
-# Expose port
-EXPOSE 8000
+# Expose port (Railway sets PORT env var)
+EXPOSE $PORT
 
-# Run application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run application (Railway will override with startCommand from railway.json)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "${PORT:-8000}"]

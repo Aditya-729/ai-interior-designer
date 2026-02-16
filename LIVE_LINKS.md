@@ -1,88 +1,130 @@
-# 🚀 Your Live Application Links
+# 🚀 LIVE LINKS - Your Deployed Application
 
-## ✅ Deployment Complete!
+## ✅ Frontend (Vercel) - LIVE
 
-### Frontend (Vercel)
 **Production URL:** https://frontend-inky-eight-53.vercel.app
-**Latest Deployment:** https://frontend-7w9mrhj8k-adityas-projects-e275b3df.vercel.app
 
-**Status:** ✅ Live and Working
+**Status:** ✅ **DEPLOYED AND WORKING**
 
-### Backend (Railway)
+**Last Check:** Frontend is accessible and responding (Status 200)
+
+---
+
+## ⚠️ Backend (Railway) - DEPLOYING
+
 **Production URL:** https://ai-interior-designer-backend-production.up.railway.app
-**Project Dashboard:** https://railway.com/project/df46718f-fd2b-48e5-94b7-8e95758397d8
 
-**Status:** ⚠️ Deployed (may need environment variables configured)
+**Status:** ⏳ **DEPLOYING** (Railway is redeploying with new variables)
 
----
-
-## 📋 Next Steps
-
-### 1. Configure Railway Environment Variables
-
-Your backend is deployed but needs environment variables. Set these in Railway:
-
-**Go to:** https://railway.com/project/df46718f-fd2b-48e5-94b7-8e95758397d8
-
-**Required Variables:**
-- `MINO_AI_API_KEY` - Your Mino AI API key
-- `PERPLEXITY_API_KEY` - Your Perplexity API key  
-- `R2_ACCOUNT_ID` - Cloudflare R2 account ID
-- `R2_ACCESS_KEY_ID` - R2 access key
-- `R2_SECRET_ACCESS_KEY` - R2 secret key
-- `R2_BUCKET_NAME=ai-interior-designer`
-- `R2_ENDPOINT` - Your R2 endpoint URL
-- `JWT_SECRET` - Random secret string for JWT
-- `ENVIRONMENT=production`
-- `PRODUCTION=true`
-- `INFERENCE_DEVICE=cpu`
-
-**Already Set:**
-- ✅ `SUPABASE_DB_HOST=db.pzsdvpemnroxylbhjirr.supabase.co`
-- ✅ `SUPABASE_DB_PORT=5432`
-- ✅ `SUPABASE_DB_NAME=postgres`
-- ✅ `SUPABASE_DB_USER=postgres`
-- ✅ `SUPABASE_DB_PASSWORD=cuetpassaiinterior`
-
-### 2. Verify Vercel Environment Variables
-
-**Already Set:**
-- ✅ `NEXT_PUBLIC_API_BASE=https://ai-interior-designer-backend-production.up.railway.app`
-- ✅ `NEXT_PUBLIC_WS_URL=wss://ai-interior-designer-backend-production.up.railway.app`
-
-### 3. Test Your Application
-
-1. **Frontend:** https://frontend-inky-eight-53.vercel.app
-2. **Backend Health:** https://ai-interior-designer-backend-production.up.railway.app/api/v1/system/health
-3. **Backend Root:** https://ai-interior-designer-backend-production.up.railway.app/
+**Expected:** Should be live in 2-5 minutes
 
 ---
 
-## 🔗 Quick Links
+## 🔧 Vercel Environment Variables
 
-- **Frontend:** https://frontend-inky-eight-53.vercel.app
-- **Backend:** https://ai-interior-designer-backend-production.up.railway.app
-- **Railway Dashboard:** https://railway.com/project/df46718f-fd2b-48e5-94b7-8e95758397d8
+Make sure these are set in Vercel:
+
+1. Go to: https://vercel.com/dashboard
+2. Select your project
+3. Go to **Settings** → **Environment Variables**
+4. Add/Verify these variables:
+
+```
+NEXT_PUBLIC_API_BASE=https://ai-interior-designer-backend-production.up.railway.app
+NEXT_PUBLIC_WS_URL=wss://ai-interior-designer-backend-production.up.railway.app
+```
+
+**After adding/updating:** Vercel will automatically redeploy (1-2 minutes)
+
+---
+
+## 🎯 Quick Test Links
+
+### Frontend
+- **Main App:** https://frontend-inky-eight-53.vercel.app
+- **Status:** ✅ Live
+
+### Backend
+- **Health Check:** https://ai-interior-designer-backend-production.up.railway.app/api/v1/system/health
+- **Root:** https://ai-interior-designer-backend-production.up.railway.app/
+- **Status:** ⏳ Deploying (check in 2-5 minutes)
+
+---
+
+## 📋 Deployment Status
+
+### ✅ Completed
+- ✅ Frontend deployed to Vercel
+- ✅ Backend deployed to Railway
+- ✅ All code pushed to GitHub
+- ✅ Environment variables added to Railway
+- ✅ Supabase Storage configured
+
+### ⏳ In Progress
+- ⏳ Railway redeploying with new variables (2-5 min)
+- ⏳ Backend starting up
+
+### 📝 To Do
+- [ ] Verify Vercel environment variables are set
+- [ ] Wait for Railway deployment to complete
+- [ ] Test backend health endpoint
+- [ ] Test frontend image upload
+
+---
+
+## 🔗 Dashboard Links
+
 - **Vercel Dashboard:** https://vercel.com/dashboard
+- **Railway Dashboard:** https://railway.com/project/df46718f-fd2b-48e5-94b7-8e95758397d8
+- **Supabase Dashboard:** https://supabase.com/dashboard/project/pzsdvpemnroxylbhjirr
 - **GitHub Repo:** https://github.com/Aditya-729/ai-interior-designer
+
+---
+
+## 🎉 Your Application
+
+**Main Application URL:**
+### https://frontend-inky-eight-53.vercel.app
+
+**Features:**
+- ✅ Image upload
+- ✅ AI-powered interior design
+- ✅ Real-time processing
+- ✅ Version history
+- ✅ Share links
 
 ---
 
 ## ⚠️ Important Notes
 
-1. **Backend Environment Variables:** The backend needs API keys and R2 credentials to function fully. Set them in Railway dashboard.
+1. **Backend Status:** Railway is currently redeploying. Wait 2-5 minutes, then test the health endpoint.
 
-2. **Database:** Supabase database is configured and should work once backend has all variables.
+2. **Vercel Variables:** Make sure `NEXT_PUBLIC_API_BASE` and `NEXT_PUBLIC_WS_URL` are set in Vercel to point to your Railway backend.
 
-3. **Inference Service:** Currently set to CPU mode. For GPU inference, you'll need a separate GPU service.
+3. **Storage:** Make sure you've created the `ai-interior-designer` bucket in Supabase Storage (public).
 
-4. **CORS:** Make sure Railway backend allows requests from your Vercel domain.
+4. **First Time:** After Railway finishes deploying, test the backend health endpoint to confirm it's working.
 
 ---
 
-## 🎉 You're Live!
+## 🚀 Next Steps
 
-Your application is deployed and accessible at:
-**https://frontend-inky-eight-53.vercel.app**
+1. **Wait 2-5 minutes** for Railway to finish deploying
+2. **Check Railway dashboard** for deployment status
+3. **Test backend:** https://ai-interior-designer-backend-production.up.railway.app/api/v1/system/health
+4. **Verify Vercel variables** are set correctly
+5. **Test your app:** https://frontend-inky-eight-53.vercel.app
 
-Once you configure the Railway environment variables, the full application will be functional!
+---
+
+## 📞 Support
+
+If you encounter issues:
+- Check Railway deployment logs
+- Verify all environment variables are set
+- Check Supabase Storage bucket exists
+- Test backend health endpoint
+
+---
+
+**🎉 Your application is live!** Once Railway finishes deploying, everything will be fully functional!

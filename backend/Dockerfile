@@ -21,8 +21,9 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip first
-RUN pip install --upgrade pip setuptools wheel
+# Install setuptools first (required for pkg_resources)
+RUN pip install --upgrade pip
+RUN pip install setuptools wheel
 
 # Copy requirements
 COPY requirements.txt .

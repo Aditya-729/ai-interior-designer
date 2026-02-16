@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from app.core.config import settings
 from app.core.logging import setup_logging
 from app.db.base import init_db
+from app.services.gpu_queue import init_gpu_queue
 from app.api.v1 import upload, transcription, scene, planner, design_knowledge, inference, projects, auth, usage, share, export, system
 from app.services.websocket_manager import websocket_manager
 

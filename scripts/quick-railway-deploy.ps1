@@ -109,7 +109,7 @@ foreach ($line in $urlOutput) {
     }
 }
 
-if ($url) {
+if ($url -ne $null) {
     Write-Host ""
     Write-Host "🎉 Your backend is live!" -ForegroundColor Green
     Write-Host ""
@@ -123,7 +123,8 @@ if ($url) {
     Write-Host "   NEXT_PUBLIC_WS_URL = $wsUrl" -ForegroundColor Gray
     Write-Host "3. Redeploy Vercel" -ForegroundColor White
     Write-Host ""
-} else {
+}
+if ($url -eq $null) {
     Write-Host ""
     Write-Host "⚠️  Get your URL from Railway dashboard:" -ForegroundColor Yellow
     Write-Host "   https://railway.app/dashboard" -ForegroundColor Cyan

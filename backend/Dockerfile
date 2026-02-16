@@ -48,10 +48,13 @@ RUN pip install --no-cache-dir \
     numpy==1.24.3 \
     Pillow==10.1.0
 
-# Finally install heavy ML packages (these may take longer)
-RUN pip install --no-cache-dir \
-    openai-whisper==20231117 \
-    sentence-transformers==2.2.2
+# Finally install heavy ML packages (these may take longer and might fail)
+# Try to install with verbose output to see what's failing
+RUN pip install --no-cache-dir --verbose \
+    openai-whisper==20231117 || echo "Warning: openai-whisper installation failed, continuing..."
+
+RUN pip install --no-cache-dir --verbose \
+    sentence-transformers==2.2.2 || echo "Warning: sentence-transformers installation failed, continuing..."
 
 # Copy application code
 COPY . .

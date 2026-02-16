@@ -10,8 +10,15 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     libffi-dev \
     libssl-dev \
+    libffi6 \
+    libssl3 \
     ffmpeg \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
     postgresql-client \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip first
@@ -48,13 +55,11 @@ RUN pip install --no-cache-dir \
     numpy==1.24.3 \
     Pillow==10.1.0
 
-# Finally install heavy ML packages (these may take longer and might fail)
-# Try to install with verbose output to see what's failing
-RUN pip install --no-cache-dir --verbose \
-    openai-whisper==20231117 || echo "Warning: openai-whisper installation failed, continuing..."
+# Finally install heavy ML packages (these may take longer)
+# Install with verbose output to see progress
+RUN pip install --no-cache-dir --verbose openai-whisper==20231117
 
-RUN pip install --no-cache-dir --verbose \
-    sentence-transformers==2.2.2 || echo "Warning: sentence-transformers installation failed, continuing..."
+RUN pip install --no-cache-dir --verbose sentence-transformers==2.2.2
 
 # Copy application code
 COPY . .

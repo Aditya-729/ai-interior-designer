@@ -19,6 +19,10 @@ RUN apt-get update && apt-get install -y \
     libgomp1 \
     postgresql-client \
     git \
+    cmake \
+    pkg-config \
+    rustc \
+    cargo \
     && rm -rf /var/lib/apt/lists/*
 
 # Install setuptools first (required for pkg_resources)
@@ -55,6 +59,10 @@ RUN pip install --no-cache-dir \
     qdrant-client==1.7.0 \
     numpy==1.24.3 \
     Pillow==10.1.0
+
+# Install PyTorch first (required by whisper and sentence-transformers)
+# Use CPU-only version to reduce size
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
 # Finally install heavy ML packages (these may take longer)
 # Install with verbose output to see progress

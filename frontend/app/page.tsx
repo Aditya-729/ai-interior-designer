@@ -107,11 +107,13 @@ export default function Home() {
     setStage('planning')
     setProgress(10)
 
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000'
+
     try {
       // 1. Analyze scene
       setStage('analyzing')
       setProgress(20)
-      const analysisResponse = await fetch(`http://localhost:8000/api/v1/analyze-scene`, {
+      const analysisResponse = await fetch(`${apiBase}/api/v1/analyze-scene`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image_id: imageId }),

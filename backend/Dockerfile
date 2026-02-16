@@ -28,45 +28,28 @@ RUN pip install setuptools wheel
 # Copy requirements
 COPY requirements.txt .
 
-# Install Python dependencies in stages for better error messages
-# First, install core dependencies
-RUN pip install --no-cache-dir \
-    fastapi==0.104.1 \
-    uvicorn[standard]==0.24.0 \
-    python-multipart==0.0.6 \
-    python-dotenv==1.0.0 \
-    pydantic==2.5.0 \
-    pydantic-settings==2.1.0 \
-    sqlalchemy==2.0.23 \
-    alembic==1.12.1 \
-    psycopg2-binary==2.9.9 \
-    httpx==0.25.2 \
-    aiofiles==23.2.1
-
-# Then install packages with C extensions
-RUN pip install --no-cache-dir \
-    python-jose[cryptography]==3.3.0 \
-    passlib[bcrypt]==1.7.4
-
-# Then install remaining packages
-RUN pip install --no-cache-dir \
-    supabase==2.0.0 \
-    boto3==1.29.7 \
-    qdrant-client==1.7.0 \
-    numpy==1.24.3 \
-    Pillow==10.1.0
-
-# Try to install ML packages, but don't fail if they don't install
-# These are optional and the app will work without them (with reduced functionality)
-# Install PyTorch CPU version first (required by ML packages)
-RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu || echo "Warning: PyTorch installation failed, ML features will be disabled"
-
-# Try to install sentence-transformers (lighter, installs first)
-RUN pip install --no-cache-dir sentence-transformers==2.2.2 || echo "Warning: sentence-transformers installation failed, vector search will be disabled"
-
-# Try to install whisper last (most problematic to build)
-# If this fails, transcription endpoints will return errors but app will still start
-RUN pip install --no-cache-dir openai-whisper==20231117 || echo "Warning: Whisper installation failed, transcription will be disabled"
+# Install Python dependencies from requirements.txt
+# This ensures all dependencies are installed correctly
+RUN pip install --no-cache-dir -r requirements.txt || \
+    (echo "Warning: Some packages failed to install, continuing..." && \
+     pip install --no-cache-dir \
+        fastapi==0.104.1 \
+        uvicorn[standard]==0.24.0 \
+        python-multipart==0.0.6 \
+        python-dotenv==1.0.0 \
+        pydantic==2.5.0 \
+        pydantic-settings==2.1.0 \
+        sqlalchemy==2.0.23 \
+        alembic==1.12.1 \
+        psycopg2-binary==2.9.9 \
+        supabase==2.0.0 \
+        httpx==0.25.2 \
+        aiofiles==23.2.1 \
+        python-jose[cryptography]==3.3.0 \
+        passlib[bcrypt]==1.7.4 \
+        qdrant-client==1.7.0 \
+        numpy==1.24.3 \
+        Pillow==10.1.0)
 
 # Copy application code
 COPY . .

@@ -53,15 +53,28 @@ class StorageClient:
             Public URL
         """
         try:
+            # Convert bytes to file-like object for Supabase
+            file_obj = io.BytesIO(file_data)
+            
             # Upload to Supabase Storage
+            # Supabase Python client expects file-like object or path
             response = self.supabase.storage.from_(self.bucket_name).upload(
                 path=key,
-                file=file_data,
+                file=file_obj,
                 file_options={"content-type": content_type, "upsert": "true"}
             )
             
             # Get public URL
-            public_url = self.supabase.storage.from_(self.bucket_name).get_public_url(key)
+            public_url_response = self.supabase.storage.from_(self.bucket_name).get_public_url(key)
+            
+            # Extract URL (Supabase returns a dict with 'publicUrl' key)
+            if isinstance(public_url_response, dict):
+                public_url = public_url_response.get("publicUrl", str(public_url_response))
+            elif isinstance(public_url_response, str):
+                public_url = public_url_response
+            else:
+                # Fallback: construct URL manually
+                public_url = f"{settings.SUPABASE_URL}/storage/v1/object/public/{self.bucket_name}/{key}"
             
             logger.info(f"File uploaded to Supabase Storage: {key}")
             return public_url

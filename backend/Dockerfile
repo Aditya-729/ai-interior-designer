@@ -19,10 +19,6 @@ RUN apt-get update && apt-get install -y \
     libgomp1 \
     postgresql-client \
     git \
-    cmake \
-    pkg-config \
-    rustc \
-    cargo \
     && rm -rf /var/lib/apt/lists/*
 
 # Install setuptools first (required for pkg_resources)
@@ -62,13 +58,15 @@ RUN pip install --no-cache-dir \
 
 # Try to install ML packages, but don't fail if they don't install
 # These are optional and the app will work without them (with reduced functionality)
-RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu || echo "Warning: PyTorch installation failed, continuing..."
+# Install PyTorch CPU version first (required by ML packages)
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu || echo "Warning: PyTorch installation failed, ML features will be disabled"
 
-# Try to install whisper (optional - app will work without it)
-RUN pip install --no-cache-dir openai-whisper==20231117 || echo "Warning: Whisper installation failed, transcription will be disabled"
-
-# Try to install sentence-transformers (optional - app will work without it)
+# Try to install sentence-transformers (lighter, installs first)
 RUN pip install --no-cache-dir sentence-transformers==2.2.2 || echo "Warning: sentence-transformers installation failed, vector search will be disabled"
+
+# Try to install whisper last (most problematic to build)
+# If this fails, transcription endpoints will return errors but app will still start
+RUN pip install --no-cache-dir openai-whisper==20231117 || echo "Warning: Whisper installation failed, transcription will be disabled"
 
 # Copy application code
 COPY . .

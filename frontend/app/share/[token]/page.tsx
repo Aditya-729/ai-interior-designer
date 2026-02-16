@@ -182,6 +182,5 @@ export default function SharePage({ params }: { params: { token: string } }) {
         </motion.div>
       </div>
     </main>
-    </>
   )
 }

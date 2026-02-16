@@ -60,15 +60,15 @@ RUN pip install --no-cache-dir \
     numpy==1.24.3 \
     Pillow==10.1.0
 
-# Install PyTorch first (required by whisper and sentence-transformers)
-# Use CPU-only version to reduce size
-RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+# Try to install ML packages, but don't fail if they don't install
+# These are optional and the app will work without them (with reduced functionality)
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu || echo "Warning: PyTorch installation failed, continuing..."
 
-# Finally install heavy ML packages (these may take longer)
-# Install with verbose output to see progress
-RUN pip install --no-cache-dir --verbose openai-whisper==20231117
+# Try to install whisper (optional - app will work without it)
+RUN pip install --no-cache-dir openai-whisper==20231117 || echo "Warning: Whisper installation failed, transcription will be disabled"
 
-RUN pip install --no-cache-dir --verbose sentence-transformers==2.2.2
+# Try to install sentence-transformers (optional - app will work without it)
+RUN pip install --no-cache-dir sentence-transformers==2.2.2 || echo "Warning: sentence-transformers installation failed, vector search will be disabled"
 
 # Copy application code
 COPY . .

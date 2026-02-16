@@ -4,7 +4,14 @@ Vector memory service using Qdrant for semantic search.
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
-from sentence_transformers import SentenceTransformer
+
+try:
+    from sentence_transformers import SentenceTransformer
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    SentenceTransformer = None
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+
 from app.core.config import settings
 from typing import List, Dict, Any, Optional
 import uuid
@@ -21,9 +28,19 @@ class VectorMemory:
             host=settings.QDRANT_HOST,
             port=settings.QDRANT_PORT,
         )
-        self.encoder = SentenceTransformer("all-MiniLM-L6-v2")
+        
+        if SENTENCE_TRANSFORMERS_AVAILABLE:
+            self.encoder = SentenceTransformer("all-MiniLM-L6-v2")
+            self.available = True
+            logger.info("Vector memory initialized with sentence-transformers")
+        else:
+            self.encoder = None
+            self.available = False
+            logger.warning("sentence-transformers not available. Vector search will be disabled.")
+        
         self.collection_name = "design_memory"
-        self._ensure_collection()
+        if self.available:
+            self._ensure_collection()
 
     def _ensure_collection(self):
         """Ensure collection exists."""
@@ -55,6 +72,9 @@ class VectorMemory:
         Returns:
             Reference ID
         """
+        if not self.available:
+            raise RuntimeError("Vector memory is not available. Please install sentence-transformers.")
+        
         # Create text representation
         text = f"{user_prompt} {room_type} {edit_plan}"
         vector = self.encoder.encode(text).tolist()
@@ -93,6 +113,10 @@ class VectorMemory:
         Returns:
             List of similar designs with scores
         """
+        if not self.available:
+            logger.warning("Vector search not available. Returning empty results.")
+            return []
+        
         # Encode query
         query_vector = self.encoder.encode(query).tolist()
 

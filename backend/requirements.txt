@@ -9,12 +9,13 @@ alembic==1.12.1
 psycopg2-binary==2.9.9
 supabase==2.0.0
 boto3==1.29.7
-openai-whisper==20231117
 httpx==0.25.2
 aiofiles==23.2.1
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 qdrant-client==1.7.0
-sentence-transformers==2.2.2
 numpy==1.24.3
 Pillow==10.1.0
+# ML packages - install separately to handle failures gracefully
+# openai-whisper==20231117
+# sentence-transformers==2.2.2

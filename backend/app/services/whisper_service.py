@@ -2,7 +2,13 @@
 Whisper service for speech-to-text transcription.
 """
 
-import whisper
+try:
+    import whisper
+    WHISPER_AVAILABLE = True
+except ImportError:
+    whisper = None
+    WHISPER_AVAILABLE = False
+
 from app.core.config import settings
 import io
 from typing import Optional, Dict, Any
@@ -15,6 +21,12 @@ class WhisperService:
     """Service for transcribing audio using Whisper."""
 
     def __init__(self):
+        if not WHISPER_AVAILABLE:
+            logger.warning("Whisper is not available. Transcription features will be disabled.")
+            self.available = False
+            return
+        
+        self.available = True
         self.model_name = settings.WHISPER_MODEL
         self.device = settings.WHISPER_DEVICE
         self.model = None
@@ -22,6 +34,8 @@ class WhisperService:
 
     def _load_model(self):
         """Lazy load Whisper model."""
+        if not self.available:
+            raise RuntimeError("Whisper is not available. Please install openai-whisper.")
         if self.model is None:
             logger.info("Loading Whisper model...")
             self.model = whisper.load_model(self.model_name, device=self.device)
@@ -43,6 +57,9 @@ class WhisperService:
                 "segments": [...]
             }
         """
+        if not self.available:
+            raise RuntimeError("Whisper is not available. Please install openai-whisper.")
+        
         try:
             model = self._load_model()
 

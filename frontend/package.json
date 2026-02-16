@@ -15,7 +15,7 @@
     "axios": "1.6.2",
     "zustand": "4.4.7",
     "react-dropzone": "14.2.3",
-    "react-audio-voice-recorder": "2.1.4",
+    "react-audio-voice-recorder": "2.2.0",
     "framer-motion": "10.16.16",
     "react-before-after-slider": "1.0.0",
     "intersection-observer": "^0.12.2",

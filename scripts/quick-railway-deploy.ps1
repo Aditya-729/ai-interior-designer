@@ -3,7 +3,7 @@ Write-Host "🚂 Railway Quick Deploy" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "Step 1: Login to Railway" -ForegroundColor Yellow
-Write-Host "This will open your browser..." -ForegroundColor Gray
+Write-Host "This will show you a URL to visit in your browser..." -ForegroundColor Gray
 railway login --browserless
 
 if ($LASTEXITCODE -ne 0) {

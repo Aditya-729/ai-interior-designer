@@ -103,13 +103,17 @@ $urlOutput = railway domain 2>&1
 $url = $null
 
 foreach ($line in $urlOutput) {
-    if ($line -match "https?://[^\s]+" -and $line -notlike "*error*" -and $line -notlike "*not found*") {
+    $hasError = $line -like "*error*"
+    $hasNotFound = $line -like "*not found*"
+    $hasUrl = $line -match "https?://[^\s]+"
+    
+    if ($hasUrl -and -not $hasError -and -not $hasNotFound) {
         $url = $matches[0]
         break
     }
 }
 
-if ($url -ne $null) {
+if ($null -ne $url) {
     Write-Host ""
     Write-Host "🎉 Your backend is live!" -ForegroundColor Green
     Write-Host ""
@@ -123,8 +127,7 @@ if ($url -ne $null) {
     Write-Host "   NEXT_PUBLIC_WS_URL = $wsUrl" -ForegroundColor Gray
     Write-Host "3. Redeploy Vercel" -ForegroundColor White
     Write-Host ""
-}
-if ($url -eq $null) {
+} else {
     Write-Host ""
     Write-Host "⚠️  Get your URL from Railway dashboard:" -ForegroundColor Yellow
     Write-Host "   https://railway.app/dashboard" -ForegroundColor Cyan
